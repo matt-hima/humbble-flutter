@@ -259,6 +259,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   int tab = 0;
   @override
   Widget build(BuildContext context) {
+    final t = Strings(ref.watch(languageProvider));
     final pages = [
       DiscoverPage(uid: widget.user.uid),
       PeoplePage(uid: widget.user.uid),
@@ -270,26 +271,26 @@ class _HomePageState extends ConsumerState<HomePage> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: tab,
         onDestinationSelected: (v) => setState(() => tab = v),
-        destinations: const [
+        destinations: [
           NavigationDestination(
             icon: Icon(Icons.explore_outlined),
             selectedIcon: Icon(Icons.explore),
-            label: 'Discover',
+            label: t.discover,
           ),
           NavigationDestination(
             icon: Icon(Icons.people_outline),
             selectedIcon: Icon(Icons.people),
-            label: 'People',
+            label: t.people,
           ),
           NavigationDestination(
             icon: Icon(Icons.chat_bubble_outline),
             selectedIcon: Icon(Icons.chat_bubble),
-            label: 'Chats',
+            label: t.chats,
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outline),
             selectedIcon: Icon(Icons.person),
-            label: 'Profile',
+            label: t.profile,
           ),
         ],
       ),
