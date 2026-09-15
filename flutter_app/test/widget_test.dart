@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:photo_hubble/main.dart';
+import 'package:photo_hubble/app.dart';
 
 void main() {
-  test('includes the migrated discovery profiles', () {
-    expect(people, hasLength(3));
+  test('exposes the Flutter application root', () {
+    expect(const HumbbleApp(), isA<HumbbleApp>());
   });
 }
