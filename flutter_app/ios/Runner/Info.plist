@@ -28,6 +28,10 @@
 	<true/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
+	<key>NSCameraUsageDescription</key>
+	<string>交友台北 uses the camera to capture verified photobooth profile photos.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>交友台北 verifies that photos are captured at the 美圖境界 photobooth.</string>
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<false/>
 		<key>UISceneConfigurations</key>

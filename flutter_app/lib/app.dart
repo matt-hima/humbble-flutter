@@ -1,14 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'core/localization.dart';
 import 'data/models.dart';
+import 'app_photo_capture.dart';
 import 'data/repositories.dart';
 
-class HumbbleApp extends StatelessWidget {
+class HumbbleApp extends ConsumerWidget {
   const HumbbleApp({super.key});
   @override
-  Widget build(BuildContext context) => MaterialApp(
-    title: 'Humbble',
+  Widget build(BuildContext context, WidgetRef ref) => MaterialApp(
+    title: Strings(ref.watch(languageProvider)).appName,
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
       colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xffffb000)),
@@ -60,19 +62,25 @@ class _SignInPageState extends ConsumerState<SignInPage> {
 
   @override
   Widget build(BuildContext context) => AuthScaffold(
-    title: 'Welcome back',
+    title: Strings(ref.watch(languageProvider)).welcome,
     subtitle: 'Find people who match your vibe.',
     children: [
       Field(
         controller: email,
-        label: 'Email',
+        label: Strings(ref.watch(languageProvider)).email,
         type: TextInputType.emailAddress,
       ),
-      Field(controller: password, label: 'Password', obscure: true),
+      Field(
+        controller: password,
+        label: Strings(ref.watch(languageProvider)).password,
+        obscure: true,
+      ),
       if (error != null) ErrorText(error!),
       FilledButton(
         onPressed: loading ? null : submit,
-        child: Text(loading ? 'Signing in…' : 'Sign in'),
+        child: Text(
+          loading ? '…' : Strings(ref.watch(languageProvider)).signIn,
+        ),
       ),
       TextButton(
         onPressed: () => Navigator.push(
@@ -124,20 +132,26 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
   @override
   Widget build(BuildContext context) => AuthScaffold(
-    title: 'Create account',
+    title: Strings(ref.watch(languageProvider)).signUp,
     subtitle: 'Start a kinder way to date.',
     children: [
-      Field(controller: name, label: 'Your name'),
+      Field(controller: name, label: Strings(ref.watch(languageProvider)).name),
       Field(
         controller: email,
-        label: 'Email',
+        label: Strings(ref.watch(languageProvider)).email,
         type: TextInputType.emailAddress,
       ),
-      Field(controller: password, label: 'Password', obscure: true),
+      Field(
+        controller: password,
+        label: Strings(ref.watch(languageProvider)).password,
+        obscure: true,
+      ),
       if (error != null) ErrorText(error!),
       FilledButton(
         onPressed: loading ? null : submit,
-        child: Text(loading ? 'Creating…' : 'Create account'),
+        child: Text(
+          loading ? '…' : Strings(ref.watch(languageProvider)).signUp,
+        ),
       ),
     ],
   );
@@ -162,14 +176,19 @@ class AuthScaffold extends StatelessWidget {
             padding: const EdgeInsets.all(24),
             child: ListView(
               children: [
+                const Align(
+                  alignment: Alignment.centerRight,
+                  child: LanguageMenu(),
+                ),
                 const SizedBox(height: 80),
                 Text(
-                  'humbble',
+                  '交友台北',
                   style: Theme.of(context).textTheme.displaySmall?.copyWith(
                     fontWeight: FontWeight.w900,
                     color: const Color(0xffff9f00),
                   ),
                 ),
+                const Text('powered by 美圖境界 Glass&Frame'),
                 const SizedBox(height: 36),
                 Text(
                   title,
@@ -301,6 +320,7 @@ class PageShell extends StatelessWidget {
               style: const TextStyle(fontSize: 29, fontWeight: FontWeight.w800),
             ),
             const Spacer(),
+            const LanguageMenu(),
             action ?? const SizedBox.shrink(),
           ],
         ),
@@ -577,6 +597,8 @@ class ProfilePage extends ConsumerWidget {
             ),
             const SizedBox(height: 10),
             Center(child: Text(p.bio)),
+            const SizedBox(height: 16),
+            PhotoBoothCapture(profile: p),
             const SizedBox(height: 28),
             Card(
               child: ListTile(
