@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/localization.dart';
+import 'core/photobooth_map.dart';
 import 'data/models.dart';
 import 'data/photobooth_service.dart';
 import 'data/repositories.dart';
@@ -42,6 +43,31 @@ class _PhotoBoothCaptureState extends ConsumerState<PhotoBoothCapture> {
     }
   }
 
+  Future<void> _openPhotobooth() async {
+    final approved = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('美圖境界 Glass&Frame'),
+        content: const SizedBox(
+          width: 600,
+          height: 450,
+          child: PhotoboothMap(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Close'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Capture here'),
+          ),
+        ],
+      ),
+    );
+    if (approved == true) await _capture();
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = Strings(ref.watch(languageProvider));
@@ -59,7 +85,7 @@ class _PhotoBoothCaptureState extends ConsumerState<PhotoBoothCapture> {
             Text(t.locationRequired),
             const SizedBox(height: 12),
             FilledButton.icon(
-              onPressed: _busy ? null : _capture,
+              onPressed: _busy ? null : _openPhotobooth,
               icon: const Icon(Icons.photo_camera),
               label: Text(_busy ? '…' : t.capturePhoto),
             ),

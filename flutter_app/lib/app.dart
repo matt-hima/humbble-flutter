@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/localization.dart';
 import 'data/models.dart';
 import 'app_photo_capture.dart';
+import 'app_profile_edit.dart';
 import 'data/repositories.dart';
 
 class HumbbleApp extends ConsumerWidget {
@@ -47,6 +48,16 @@ class _SignInPageState extends ConsumerState<SignInPage> {
   bool loading = false;
   String? error;
   Future<void> submit() async {
+    final t = Strings(ref.read(languageProvider));
+    final validationError = _validateSignIn(
+      email: email.text,
+      password: password.text,
+      strings: t,
+    );
+    if (validationError != null) {
+      setState(() => error = validationError);
+      return;
+    }
     setState(() {
       loading = true;
       error = null;
@@ -58,6 +69,13 @@ class _SignInPageState extends ConsumerState<SignInPage> {
     } finally {
       if (mounted) setState(() => loading = false);
     }
+  }
+
+  @override
+  void dispose() {
+    email.dispose();
+    password.dispose();
+    super.dispose();
   }
 
   @override
@@ -114,6 +132,16 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
   bool loading = false;
   String? error;
   Future<void> submit() async {
+    final validationError = _validateSignUp(
+      name: name.text,
+      email: email.text,
+      password: password.text,
+      strings: Strings(ref.read(languageProvider)),
+    );
+    if (validationError != null) {
+      setState(() => error = validationError);
+      return;
+    }
     setState(() {
       loading = true;
       error = null;
@@ -128,6 +156,14 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
     } finally {
       if (mounted) setState(() => loading = false);
     }
+  }
+
+  @override
+  void dispose() {
+    name.dispose();
+    email.dispose();
+    password.dispose();
+    super.dispose();
   }
 
   @override
@@ -156,6 +192,37 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
     ],
   );
 }
+
+String? _validateSignIn({
+  required String email,
+  required String password,
+  required Strings strings,
+}) {
+  if (email.trim().isEmpty) return strings.emailRequired;
+  if (!_isValidEmail(email)) return strings.invalidEmail;
+  if (password.isEmpty) return strings.passwordRequired;
+  return null;
+}
+
+String? _validateSignUp({
+  required String name,
+  required String email,
+  required String password,
+  required Strings strings,
+}) {
+  if (name.trim().isEmpty) return strings.nameRequired;
+  final signInError = _validateSignIn(
+    email: email,
+    password: password,
+    strings: strings,
+  );
+  if (signInError != null) return signInError;
+  if (password.length < 6) return strings.passwordTooShort;
+  return null;
+}
+
+bool _isValidEmail(String value) =>
+    RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(value.trim());
 
 class AuthScaffold extends StatelessWidget {
   const AuthScaffold({
@@ -599,6 +666,8 @@ class ProfilePage extends ConsumerWidget {
             const SizedBox(height: 10),
             Center(child: Text(p.bio)),
             const SizedBox(height: 16),
+            Center(child: ProfileEditButton(profile: p)),
+            const SizedBox(height: 8),
             PhotoBoothCapture(profile: p),
             const SizedBox(height: 28),
             Card(

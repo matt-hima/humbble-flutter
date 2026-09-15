@@ -44,6 +44,19 @@ class Strings {
   String get email => _t('電子郵件', 'Email', 'メール');
   String get password => _t('密碼', 'Password', 'パスワード');
   String get name => _t('你的名字', 'Your name', 'お名前');
+  String get nameRequired =>
+      _t('請輸入你的名字。', 'Enter your name.', 'お名前を入力してください。');
+  String get emailRequired =>
+      _t('請輸入電子郵件。', 'Enter your email address.', 'メールアドレスを入力してください。');
+  String get invalidEmail =>
+      _t('請輸入有效的電子郵件。', 'Enter a valid email address.', '有効なメールアドレスを入力してください。');
+  String get passwordRequired =>
+      _t('請輸入密碼。', 'Enter your password.', 'パスワードを入力してください。');
+  String get passwordTooShort => _t(
+    '密碼至少需要 6 個字元。',
+    'Password must be at least 6 characters.',
+    'パスワードは6文字以上で入力してください。',
+  );
   String _t(String zh, String en, String ja) => switch (language) {
     AppLanguage.zhTw => zh,
     AppLanguage.en => en,
